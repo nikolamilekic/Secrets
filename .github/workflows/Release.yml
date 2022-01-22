@@ -2,23 +2,20 @@ name: Release
 
 on:
   push:
-    branches:
-      - release
+    branches: [ release ]
 
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.101
     - name: Run Fake
       run: .\build.cmd -t ReleaseAction -p 4
       shell: cmd
       env:
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}
-        NUGET_KEY: ${{ secrets.NUGET_KEY }}
