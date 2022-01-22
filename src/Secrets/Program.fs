@@ -62,7 +62,7 @@ let headers = [
     "Authorization", "Bearer " + settings.Token
 ]
 
-let basePath = "https://" + settings.Host + "/v1"
+let basePath = settings.Host + "/v1"
 
 let parser = ArgumentParser.Create(programName = "secrets")
 let arguments =
