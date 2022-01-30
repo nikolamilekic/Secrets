@@ -19,3 +19,4 @@ jobs:
       shell: cmd
       env:
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_KEY: ${{ secrets.NUGET_KEY }}
