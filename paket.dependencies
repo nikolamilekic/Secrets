@@ -8,10 +8,8 @@ framework: auto-detect
 nuget FSharp.Core
 nuget GitInfo copy_local: true
 nuget Milekic.YoLo prerelease storage: symlink
-nuget Fleece.SystemJson
 nuget Argu
 nuget FSharpPlus
-nuget FSharp.Data
 nuget Fs1PasswordConnect prerelease
 
 //Testing

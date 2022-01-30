@@ -9,10 +9,6 @@ NUGET
     Expecto (9.0.4)
       FSharp.Core (>= 4.6)
       Mono.Cecil (>= 0.11.3)
-    Fleece.SystemJson (0.9)
-      FSharp.Core (>= 4.6.2)
-      FSharpPlus (>= 1.2.2)
-      System.Json (>= 4.7.1)
     Fleece.SystemTextJson (0.9)
       FSharp.Core (>= 4.6.2)
       FSharpPlus (>= 1.2.2)
@@ -175,7 +171,6 @@ NUGET
       System.Threading.Tasks (>= 4.3)
     System.IO.FileSystem.Primitives (4.3)
       System.Runtime (>= 4.3)
-    System.Json (4.7.1)
     System.Linq (4.3)
       System.Collections (>= 4.3)
       System.Diagnostics.Debug (>= 4.3)
@@ -393,14 +388,14 @@ NUGET
       FSharp.Core (>= 4.6)
       System.Collections.Immutable (>= 1.5)
   remote: ../Fs1PasswordConnect/publish
-    Fs1PasswordConnect (0.1.12)
+    Fs1PasswordConnect (0.1.18)
       Fleece.SystemTextJson (>= 0.9)
       FSharp.Core (>= 6.0)
       FSharp.Data (>= 4.2.7)
       FSharpPlus (>= 1.2.2)
-      Milekic.YoLo (>= 3.0.0-dev.17)
+      Milekic.YoLo (>= 3.0.0-dev.25)
   remote: ../Milekic.YoLo/publish
-    Milekic.YoLo (3.0.0-dev.23) - storage: symlink
+    Milekic.YoLo (3.0.0-dev.25) - storage: symlink
       FSharp.Core (>= 6.0)
 
 GROUP Build
