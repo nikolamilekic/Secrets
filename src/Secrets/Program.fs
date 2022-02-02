@@ -3,8 +3,7 @@ open System.IO
 open Argu
 open Fs1PasswordConnect
 open FSharpPlus
-open Fleece.SystemTextJson
-open FSharp.Data
+open Milekic.YoLo
 
 [<RequireSubcommand>]
 type Argument =
@@ -32,14 +31,10 @@ and InjectArgument =
 
 let argv = Environment.GetCommandLineArgs()
 let executingAssembly = argv.[0]
-let settings =
-    let settingsPath = Path.GetDirectoryName executingAssembly + "/SecretsSettings.json"
-    let rawSettings = File.ReadAllText settingsPath
-    match parseJson rawSettings with
-    | Ok s -> s
-    | Error e -> failwith $"Failed to decode SecretsSettings. Error: {e}"
+let connectClient =
+    ConnectClient.fromEnvironmentVariablesCached ()
+    |> Result.failOnError "Failed to retrieve credentials from environment variables. You must set OP_CONNECT_HOST and OP_CONNECT_TOKEN."
 
-let connectClient = ConnectClient.fromSettingsCached settings
 let parser = ArgumentParser.Create(programName = "secrets")
 let arguments =
     parser.Parse(inputs = (argv |> Array.skip 1), ignoreUnrecognized = false)
