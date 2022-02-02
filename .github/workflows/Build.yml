@@ -15,7 +15,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
     - name: Run Fake
-      run: .\build.cmd -t BuildAction -p 4
+      run: .\build.cmd -t BuildAction
       shell: cmd
       env:
         GitHubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -273,12 +273,12 @@ module TestSourceLink =
     open Fake.DotNet
 
     Target.create "TestSourceLink" <| fun _ ->
-        !! "publish/*.snupkg"
+        !! "publish/*.nupkg"
         |> Seq.iter (fun p ->
             DotNet.exec id "sourcelink" $"test {p}"
             |> fun r -> if not r.OK then failwith $"Source link check for {p} failed.")
 
-    [ "Pack" ] ==> "TestSourceLink"
+    [ "Clean"; "Pack" ] ==> "TestSourceLink"
 
 module Run =
     open Fake.Core
@@ -344,7 +344,7 @@ module UploadArtifactsToGitHub =
         let targetCommit =
             if GitHubActions.detect() then GitHubActions.Environment.Sha
             else ""
-        if targetCommit <> "" && finalVersion.PreRelease.IsNone then
+        if targetCommit <> "" then
             let token = Environment.environVarOrFail "GitHubToken"
             GitHub.createClientWithToken token
             |> GitHub.createRelease
@@ -373,10 +373,8 @@ module UploadPackageToNuget =
     open Fake.DotNet
     open Fake.BuildServer
 
-    open FinalVersion
-
     Target.create "UploadPackageToNuget" <| fun _ ->
-        if GitHubActions.detect() && finalVersion.Value.PreRelease.IsNone then
+        if GitHubActions.detect() then
             Paket.push <| fun p ->
                 { p with
                     ToolType = ToolType.CreateLocalTool()
@@ -413,7 +411,7 @@ module Release =
             ""
             $"push -f {gitHome.Value} HEAD:release"
 
-    [ "Clean"; "Build"; "Test" ] ==> "Release"
+    [ "Clean"; "Build"; "Test"; "TestSourceLink" ] ==> "Release"
 
 module GitHubActions =
     open Fake.Core
