@@ -1,13 +1,14 @@
 storage none
-source https://www.nuget.org/api/v2
-source "../Fs1PasswordConnect/publish"
-source "../Milekic.YoLo/publish"
+source https://api.nuget.org/v3/index.json
+source ./paket-files/github.com
+
+http https://github.com/nikolamilekic/Fs1PasswordConnect/releases/download/0.1.21/Fs1PasswordConnect.0.1.21.nupkg
 
 framework: auto-detect
 
 nuget FSharp.Core
 nuget GitInfo copy_local: true
-nuget Milekic.YoLo prerelease storage: symlink
+nuget Milekic.YoLo prerelease
 nuget Argu
 nuget FSharpPlus
 nuget Fs1PasswordConnect prerelease

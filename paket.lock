@@ -1,7 +1,7 @@
 STORAGE: NONE
 RESTRICTION: == net6.0
 NUGET
-  remote: https://www.nuget.org/api/v2
+  remote: https://api.nuget.org/v3/index.json
     Argu (6.1.1)
       FSharp.Core (>= 4.3.2)
       System.Configuration.ConfigurationManager (>= 4.4)
@@ -39,6 +39,8 @@ NUGET
       Microsoft.TestPlatform.ObjectModel (>= 17.0)
       Newtonsoft.Json (>= 9.0.1)
     Microsoft.Win32.SystemEvents (6.0)
+    Milekic.YoLo (3.0.0-dev.31)
+      FSharp.Core (>= 6.0)
     Mono.Cecil (0.11.4)
     NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
@@ -387,17 +389,16 @@ NUGET
       Expecto (>= 9.0 < 10.0)
       FSharp.Core (>= 4.6)
       System.Collections.Immutable (>= 1.5)
-  remote: ../Fs1PasswordConnect/publish
-    Fs1PasswordConnect (0.1.18)
+  remote: ./paket-files/github.com
+    Fs1PasswordConnect (0.1.21)
       Fleece.SystemTextJson (>= 0.9)
       FSharp.Core (>= 6.0)
       FSharp.Data (>= 4.2.7)
       FSharpPlus (>= 1.2.2)
-      Milekic.YoLo (>= 3.0.0-dev.25)
-  remote: ../Milekic.YoLo/publish
-    Milekic.YoLo (3.0.0-dev.25) - storage: symlink
-      FSharp.Core (>= 6.0)
-
+      Milekic.YoLo (>= 3.0.0-dev.31)
+HTTP
+  remote: https://github.com
+    Fs1PasswordConnect.0.1.21.nupkg (/nikolamilekic/Fs1PasswordConnect/releases/download/0.1.21/Fs1PasswordConnect.0.1.21.nupkg)
 GROUP Build
 STORAGE: NONE
 RESTRICTION: || (== net6.0) (== netstandard2.0)
