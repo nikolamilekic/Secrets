@@ -25,6 +25,12 @@
       "commands": [
         "livingdoc"
       ]
+    },
+    "sleet": {
+      "version": "5.0.1",
+      "commands": [
+        "sleet"
+      ]
     }
   }
 }

@@ -49,6 +49,10 @@ module ReleaseNotesParsing =
         (ReleaseNotes.load releaseNotesFile).Notes
         |> String.concat Environment.NewLine
 
+module ConnectClient =
+    open Fs1PasswordConnect
+    let client = ConnectClient.fromEnvironmentVariablesCached ()
+
 module Clean =
     //nuget Fake.IO.FileSystem
 
@@ -345,7 +349,7 @@ module UploadArtifactsToGitHub =
             if GitHubActions.detect() then GitHubActions.Environment.Sha
             else ""
         if targetCommit <> "" then
-            let token = Environment.environVarOrFail "GitHubToken"
+            let token = Environment.environVarOrFail "GITHUB_TOKEN"
             GitHub.createClientWithToken token
             |> GitHub.createRelease
                 gitOwner
@@ -368,20 +372,73 @@ module UploadArtifactsToGitHub =
 module UploadPackageToNuget =
     //nuget Fake.DotNet.Paket
     //nuget Fake.BuildServer.GitHubActions
+    //nuget Fs1PasswordConnect
 
     open Fake.Core
     open Fake.DotNet
     open Fake.BuildServer
 
+    open FinalVersion
+
     Target.create "UploadPackageToNuget" <| fun _ ->
-        if GitHubActions.detect() then
-            Paket.push <| fun p ->
-                { p with
-                    ToolType = ToolType.CreateLocalTool()
-                    WorkingDir = __SOURCE_DIRECTORY__ + "/publish" }
+        if GitHubActions.detect() = false || finalVersion.Value.PreRelease.IsSome then () else
+
+        let apiKey =
+            let original = Environment.environVarOrFail "NUGET_KEY"
+            match ConnectClient.client with
+            | Ok client ->
+                match client.Inject original |> Async.RunSynchronously with
+                | Error e -> failwith $"Could not update Sleet config due to the following Connect error: {e.ToString()}."
+                | Ok t -> t
+            | Error () -> original
+
+        Paket.push <| fun p ->
+            { p with
+                ApiKey = apiKey
+                ToolType = ToolType.CreateLocalTool()
+                WorkingDir = __SOURCE_DIRECTORY__ + "/publish" }
 
     [ "Pack"; "Test"; "TestSourceLink" ] ==> "UploadPackageToNuget"
     [ "UploadArtifactsToGitHub" ] ?=> "UploadPackageToNuget"
+
+module UploadPackageWithSleet =
+    //nuget Fake.DotNet.Cli
+    //nuget Fs1PasswordConnect
+    //nuget Fake.BuildServer.GitHubActions
+
+    open Fake.Core
+    open Fake.DotNet
+    open Fake.BuildServer
+    open System.IO
+
+    let publishDirectory = __SOURCE_DIRECTORY__ + "/publish"
+
+    Target.create "UploadPackageWithSleet" <| fun _ ->
+        if (GitHubActions.detect() = false ||
+            Directory.Exists(publishDirectory) = false) then () else
+
+        let configFile =
+            match Environment.environVarOrNone "SLEET_CONFIG", ConnectClient.client with
+            | Some path, Ok client ->
+                let initialConfig = File.ReadAllText path
+                match client.Inject initialConfig |> Async.RunSynchronously with
+                | Error e -> failwith $"Could not update Sleet config due to the following Connect error: {e.ToString()}."
+                | Ok updatedConfig when updatedConfig = initialConfig -> Some path
+                | Ok updatedConfig ->
+                    let updatedConfigPath = __SOURCE_DIRECTORY__ + "/Sleet.json"
+                    File.WriteAllText(updatedConfigPath, updatedConfig)
+                    Some updatedConfigPath
+            | Some path, Error () -> Some path
+            | _ -> None
+
+        match configFile with
+        | Some path ->
+            DotNet.exec id "sleet" $"push {publishDirectory} -c {path}"
+            |> fun r -> if not r.OK then failwith $"Failed to push to Sleet. Errors: {r.Errors}"
+        | _ -> ()
+
+    [ "Pack"; "Test"; "TestSourceLink" ] ==> "UploadPackageWithSleet"
+    [ "UploadArtifactsToGitHub" ] ?=> "UploadPackageWithSleet"
 
 module Release =
     //nuget Fake.Tools.Git
@@ -420,7 +477,12 @@ module GitHubActions =
     [ "Clean"; "Build"; "Test"; "TestSourceLink" ] ==> "BuildAction"
 
     Target.create "ReleaseAction" ignore
-    [ "Clean"; "UploadArtifactsToGitHub"; "UploadPackageToNuget" ] ==> "ReleaseAction"
+    [
+        "Clean"
+        "UploadArtifactsToGitHub"
+        "UploadPackageToNuget"
+        "UploadPackageWithSleet"
+    ] ==> "ReleaseAction"
 
 module Default =
     open Fake.Core

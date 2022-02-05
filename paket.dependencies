@@ -1,8 +1,6 @@
 storage none
 source https://api.nuget.org/v3/index.json
-source ./paket-files/github.com
-
-http https://github.com/nikolamilekic/Fs1PasswordConnect/releases/download/0.1.21/Fs1PasswordConnect.0.1.21.nupkg
+source https://nuget.nikolamilekic.com/index.json
 
 framework: auto-detect
 
@@ -27,6 +25,7 @@ nuget YoloDev.Expecto.TestSdk
 group Build
     storage none
     source https://api.nuget.org/v3/index.json
+    source https://nuget.nikolamilekic.com/index.json
 
     framework: netstandard2.0, net60
 
@@ -44,4 +43,6 @@ group Build
     nuget Fake.IO.Zip
     nuget Fake.Tools.Git
 
-    nuget Milekic.YoLo
+    nuget Milekic.YoLo prerelease
+    nuget Fs1PasswordConnect
+
