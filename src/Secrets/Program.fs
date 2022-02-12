@@ -14,14 +14,16 @@ type Argument =
         member this.Usage =
             match this with
             | Get _ -> "Retrieves a secret from the Connect server using an inject identifier. If the identifier includes a '_', it is replaced with a space."
-            | Inject _ -> "Injects secrets into a file. Replacement strings must be of type {{ op://<VaultIdOrTitle/<ItemIdOrTitle>/<FieldIdOrLabel> }}"
+            | Inject _ -> "Injects secrets into a file. Replacement strings must be of type {{ op://<VaultIdOrTitle/<ItemIdOrTitle>/<FieldIdLabelFileIdOrFileName> }}"
             | Version -> "Prints the version and exits"
 and GetArgument =
     | [<MainCommand; ExactlyOnce>] Identifier of Identifier : string
+    | Output of OutputPath : string
     interface IArgParserTemplate with
         member this.Usage =
             match this with
-            | Identifier _ -> "Replacement identifier of the item to retrieve in the form <VaultIdOrTitle/<ItemIdOrTitle>/<FieldIdOrLabel>"
+            | Identifier _ -> "Replacement identifier of the item to retrieve in the form <VaultIdOrTitle/<ItemIdOrTitle>/<FieldIdLabelFileIdOrFileName>. If identifier contains spaces you can replace them with underscores."
+            | Output _ -> "Output file path. If specified output will be saved to file instead of printed out."
 and InjectArgument =
     | [<ExactlyOnce>] Template of TemplateFilePath : string
     | [<ExactlyOnce>] Output of OutputFilePath : string
@@ -44,14 +46,17 @@ let arguments =
     with e -> printfn $"{e.Message}"; exit 1
 
 match arguments.GetSubCommand() with
-| Version -> printfn $"{Metadata.productDescription.Value}"; exit 0
+| Version -> printfn $"{Metadata.productDescription.Value}"
 | Get getArguments ->
     let identifier = (getArguments.GetResult Identifier).Replace('_', ' ')
     let injectString = "{{ op://" + identifier + " }}"
 
     let result = connectClient.Value.Inject injectString |> Async.RunSynchronously
     match result with
-    | Ok field -> printfn $"{field}"; exit 0
+    | Ok field ->
+        match getArguments.TryGetResult GetArgument.Output with
+        | Some output -> File.WriteAllText(output, field)
+        | None -> printfn $"{field}"
     | Error e -> printfn $"{e.ToString()}"; exit 1
 | Inject injectArguments ->
     let templatePath = injectArguments.GetResult Template
@@ -60,7 +65,5 @@ match arguments.GetSubCommand() with
     let template = File.ReadAllText templatePath
     let result = connectClient.Value.Inject template |> Async.RunSynchronously
     match result with
-    | Ok result ->
-        File.WriteAllText(outputPath, result)
-        exit 0
+    | Ok result -> File.WriteAllText(outputPath, result)
     | Error e -> printfn $"{e.ToString()}"; exit 1

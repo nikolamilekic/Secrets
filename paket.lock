@@ -388,13 +388,13 @@ NUGET
       FSharp.Core (>= 4.6)
       System.Collections.Immutable (>= 1.5)
   remote: https://nuget.nikolamilekic.com/index.json
-    Fs1PasswordConnect (0.2.0)
+    Fs1PasswordConnect (0.2.2)
       Fleece.SystemTextJson (>= 0.9)
       FSharp.Core (>= 6.0)
       FSharp.Data (>= 4.2.7)
       FSharpPlus (>= 1.2.2)
       Milekic.YoLo (>= 3.0.0-dev.38)
-    Milekic.YoLo (3.0.0-dev.38)
+    Milekic.YoLo (3.0.0-dev.42)
       FSharp.Core (>= 6.0)
 
 GROUP Build
@@ -661,11 +661,11 @@ NUGET
     System.Windows.Extensions (6.0) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= netcoreapp3.1))
       System.Drawing.Common (>= 6.0) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= netcoreapp3.1))
   remote: https://nuget.nikolamilekic.com/index.json
-    Fs1PasswordConnect (0.2.0)
+    Fs1PasswordConnect (0.2.2)
       Fleece.SystemTextJson (>= 0.9) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= net6.0))
       FSharp.Core (>= 6.0) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= net6.0))
       FSharp.Data (>= 4.2.7) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= net6.0))
       FSharpPlus (>= 1.2.2) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= net6.0))
       Milekic.YoLo (>= 3.0.0-dev.38) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= net6.0))
-    Milekic.YoLo (3.0.0-dev.38)
+    Milekic.YoLo (3.0.0-dev.42)
       FSharp.Core (>= 6.0) - restriction: || (== net6.0) (&& (== netstandard2.0) (>= net6.0))
