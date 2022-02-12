@@ -13,7 +13,7 @@ type Argument =
     interface IArgParserTemplate with
         member this.Usage =
             match this with
-            | Get _ -> "Retrieves a secret from the Connect server"
+            | Get _ -> "Retrieves a secret from the Connect server using an inject identifier. If the identifier includes a '_', it is replaced with a space."
             | Inject _ -> "Injects secrets into a file. Replacement strings must be of type {{ op://<VaultIdOrTitle/<ItemIdOrTitle>/<FieldIdOrLabel> }}"
             | Version -> "Prints the version and exits"
 and GetArgument =
@@ -46,7 +46,7 @@ let arguments =
 match arguments.GetSubCommand() with
 | Version -> printfn $"{Metadata.productDescription.Value}"; exit 0
 | Get getArguments ->
-    let identifier = getArguments.GetResult Identifier
+    let identifier = (getArguments.GetResult Identifier).Replace('_', ' ')
     let injectString = "{{ op://" + identifier + " }}"
 
     let result = connectClient.Value.Inject injectString |> Async.RunSynchronously
