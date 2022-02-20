@@ -6,10 +6,10 @@ framework: auto-detect
 
 nuget FSharp.Core
 nuget GitInfo copy_local: true
-nuget Milekic.YoLo prerelease
+nuget Milekic.YoLo storage:packages
 nuget Argu
 nuget FSharpPlus
-nuget Fs1PasswordConnect prerelease
+nuget Fs1PasswordConnect
 
 //Testing
 nuget Unquote
@@ -20,29 +20,3 @@ nuget SpecFlow.xUnit
 nuget xunit
 nuget xunit.runner.visualstudio
 nuget YoloDev.Expecto.TestSdk
-
-// [ FAKE GROUP ]
-group Build
-    storage none
-    source https://api.nuget.org/v3/index.json
-    source https://nuget.nikolamilekic.com/index.json
-
-    framework: netstandard2.0, net60
-
-    nuget FSharp.Core
-
-    nuget Fake.Api.GitHub
-    nuget Octokit = 0.48 // Later versions lead to MissingMethodExceptions
-    nuget Fake.BuildServer.GitHubActions
-    nuget Fake.Core.ReleaseNotes
-    nuget Fake.Core.SemVer
-    nuget Fake.Core.Target
-    nuget Fake.DotNet.Cli
-    nuget Fake.DotNet.Paket
-    nuget Fake.IO.FileSystem
-    nuget Fake.IO.Zip
-    nuget Fake.Tools.Git
-
-    nuget Milekic.YoLo prerelease
-    nuget Fs1PasswordConnect
-
