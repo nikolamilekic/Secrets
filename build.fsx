@@ -201,7 +201,7 @@ module Publish =
     open FinalVersion
 
     let projectsToPublish = !!"src/*/*.?sproj"
-    let runtimesToTarget = [ "osx-x64"; "win-x64"; "linux-arm"; "linux-x64"; "linux-musl-arm" ]
+    let runtimesToTarget = [ "osx-x64"; "win-x64"; "linux-arm"; "linux-x64"; "linux-musl-arm"; "linux-musl-arm64" ]
 
     Target.create "Publish" <| fun _ ->
         let projectsToPublish = query {
